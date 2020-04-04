@@ -15,9 +15,28 @@ class ProductAPITest extends TestCase
     public function productCreate()
     {
         $this->withoutExceptionHandling();
-        $response = $this->post('api/product', ['sku' => '123']);
-        $response->assertStatus(200);
-
+        $response = $this->post('api/product', $this->productTestData());
+    
         $this->assertCount(1, Product::all());
+
+        $product = Product::all()->first();
+
+        $this->assertEquals('123456' , $product->sku );
+        $this->assertEquals('Control Product A' , $product->name );
+        $this->assertEquals('10' , $product->price );
+        $this->assertEquals('this is the description for a controlled test product' , $product->description );
+        $this->assertEquals('http://image_site.looking' , $product->image );
+    }
+
+    private function productTestData()
+    {
+        return [
+            'sku' => '123456',
+            'name' => 'Control Product A',
+            'price' => '10.00',
+            'description' => 'this is the description for a controlled test product',
+            'image' => 'http://image_site.looking',
+
+        ];
     }
 }
