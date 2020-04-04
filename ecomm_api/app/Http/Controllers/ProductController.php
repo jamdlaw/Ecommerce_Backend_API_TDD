@@ -35,6 +35,7 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
+        Product::create( ['sku' => $request->sku]);
         return response(200);
     }
 
