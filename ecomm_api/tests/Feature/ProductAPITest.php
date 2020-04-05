@@ -26,6 +26,10 @@ class ProductAPITest extends TestCase
         $this->assertEquals('10' , $product->price );
         $this->assertEquals('this is the description for a controlled test product' , $product->description );
         $this->assertEquals('http://image_site.looking' , $product->image );
+        $this->assertEquals('true', $product->active);
+        $this->assertEquals('100', $product->quantity);
+        
+        
     }
 
     private function productTestData()
@@ -36,7 +40,8 @@ class ProductAPITest extends TestCase
             'price' => '10.00',
             'description' => 'this is the description for a controlled test product',
             'image' => 'http://image_site.looking',
-
+            'active'   => 'true',
+            'quantity' => '100',
         ];
     }
 }

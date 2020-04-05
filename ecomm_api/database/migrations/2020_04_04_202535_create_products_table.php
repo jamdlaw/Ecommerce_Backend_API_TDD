@@ -20,6 +20,9 @@ class CreateProductsTable extends Migration
             $table->decimal('price');
             $table->string('description');
             $table->string('image');
+            $table->boolean('active');
+            $table->integer('quantity');
+            
             $table->timestamps();
         });
     }

@@ -41,6 +41,8 @@ class ProductController extends Controller
                             'price' => $request->price,
                             'description' => $request->description,
                             'image' => $request->image,
+                            'active' => $request->active,
+                            'quantity' => $request->quantity,
                     ]);
         return response(200);
     }
