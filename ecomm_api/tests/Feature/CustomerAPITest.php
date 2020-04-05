@@ -15,9 +15,27 @@ class CustomerAPITest extends TestCase
     public function get_customer_data()
     {
         $this->withoutExceptionHandling();
-        $customer = Customer::create(['name' => 'James Lawrence']);
-
-        $this->assertCount(1, Customer::all() );
         
+        $customer = Customer::create($this->data());
+        $this->assertCount(1, Customer::all());
+        
+        $response = $this->get('api/customer/' . $customer->id );
+
+        $response->assertJson(['firstName'=> 'James']);
+    }
+
+    private function data()
+    {
+        return [
+            'firstName' => "James",
+            'lastName' => ' Lawrence',
+            'phone' => '555-5555',
+            'email' => 'test@monkey.com',
+            'address1' => '888 south st',
+            'address2' => 'unit 88',
+            'city' => 'San Diego',
+            'state' => 'CA',
+            'zip' => '92021',
+        ];
     }
 }
