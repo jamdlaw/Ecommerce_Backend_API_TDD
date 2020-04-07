@@ -18,8 +18,8 @@ class OrderTest extends TestCase
         
         $this->withoutExceptionHandling();
         
-        //$customer = Customer::create();
-        $order = Order::create(array_merge($this->data(), ['customer_id'=> 1]));
+        $customer = factory(Customer::class)->create();
+        $order = Order::create(array_merge($this->data(), ['customer_id'=> $customer->id]));
         $this->assertCount(1, Order::all());
     
     }
