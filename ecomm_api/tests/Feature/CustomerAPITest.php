@@ -16,12 +16,12 @@ class CustomerAPITest extends TestCase
     {
         $this->withoutExceptionHandling();
         
-        $customer = Customer::create($this->data());
+        $customer = factory(Customer::class)->create();
         $this->assertCount(1, Customer::all());
         
         $response = $this->get('api/customer/' . $customer->id );
 
-        $response->assertJson(['firstName'=> 'James']);
+        $response->assertJson(['firstName'=> $customer->firstName]);
     }
 
     private function data()
