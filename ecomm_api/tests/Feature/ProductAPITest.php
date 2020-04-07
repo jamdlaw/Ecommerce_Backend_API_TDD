@@ -12,7 +12,7 @@ class ProductAPITest extends TestCase
     use RefreshDatabase;
 
     /** @test */
-    public function productCreate()
+    public function a_product_can_be_created()
     {
         $this->withoutExceptionHandling();
         $response = $this->post('api/product', $this->productTestData());
