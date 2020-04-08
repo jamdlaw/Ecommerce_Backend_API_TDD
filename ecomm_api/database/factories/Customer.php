@@ -11,11 +11,11 @@ $factory->define(Customer::class, function (Faker $faker) {
         'lastName' => $faker->lastName,
         'phone' => $faker->phoneNumber,
         'email' => $faker->unique()->safeEmail,
-        'address1' => Str::random(10),
-        'address2' => Str::random(10),
-        'city' => Str::random(10) ,
-        'state' => Str::random(10),
-        'zip' => Str::random(10),
+        'address1' => $faker->streetAddress,
+        'address2' => $faker->buildingNumber,
+        'city' => $faker->city ,
+        'state' => $faker->stateAbbr,
+        'zip' => $faker->postcode,
     ];
 });
 
