@@ -9,5 +9,6 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::post('product', 'ProductController@store');
 
-
 Route::get('customer/{customer_id}', 'CustomerController@show' );
+
+Route::patch('product/{product}', 'ProductController@update');

@@ -78,7 +78,9 @@ class ProductController extends Controller
      */
     public function update(Request $request, Product $product)
     {
-        //
+        //dd($product);
+        $product->update(['quantity' => $request->quantity]);
+        return response([''], 200 );
     }
 
     /**

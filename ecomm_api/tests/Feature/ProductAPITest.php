@@ -39,6 +39,12 @@ class ProductAPITest extends TestCase
         $product = factory(Product::class)->create();
 
         $this->assertCount(1, Product::all());
+
+        $this->patch('/api/product/' . $product->id, ['quantity' => '333'] );
+
+        $product = Product::first();
+
+        $this->assertEquals('333', $product->quantity);
     }
 
     private function productTestData()
