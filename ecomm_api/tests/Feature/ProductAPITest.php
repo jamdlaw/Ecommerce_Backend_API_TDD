@@ -32,6 +32,15 @@ class ProductAPITest extends TestCase
         
     }
 
+    /** @test */
+    public function a_product_inventory_number_can_be_updated()
+    {
+        $this->withoutExceptionHandling();
+        $product = factory(Product::class)->create();
+
+        $this->assertCount(1, Product::all());
+    }
+
     private function productTestData()
     {
         return [
