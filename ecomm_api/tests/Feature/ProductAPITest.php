@@ -62,6 +62,38 @@ class ProductAPITest extends TestCase
         $this->assertEquals('22', $product->price);
     }
 
+    /** @test */
+    public function a_product_can_be_deactived()
+    {
+        $this->withoutExceptionHandling();
+        $product = factory(Product::class)->create(['active' => true]);
+
+        $this->assertCount(1, Product::all());
+
+        $this->patch('/api/product/' . $product->id, ['active' => false]);
+
+        $product = Product::first();
+
+        $this->assertEquals(0, $product->active);
+
+    }
+
+    /** @test */
+    public function a_product_can_be_activated()
+    {
+        $this->withoutExceptionHandling();
+        $product = factory(Product::class)->create(['active' => false]);
+
+        $this->assertCount(1, Product::all());
+
+        $this->patch('/api/product/' . $product->id, ['active' => true]);
+
+        $product = Product::first();
+
+        $this->assertEquals(1, $product->active);
+
+    }
+
     private function productTestData()
     {
         return [
