@@ -21,7 +21,7 @@ class CreateProductsTable extends Migration
             $table->string('description');
             $table->string('image');
             $table->boolean('active');
-            $table->integer('quantity');
+            $table->unsignedInteger('quantity');
             
             $table->timestamps();
         });
