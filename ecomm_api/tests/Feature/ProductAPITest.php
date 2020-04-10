@@ -47,6 +47,21 @@ class ProductAPITest extends TestCase
         $this->assertEquals('333', $product->quantity);
     }
 
+    /** @test */
+    public function a_product_price_can_be_updated()
+    {
+        $this->withoutExceptionHandling();
+        $product = factory(Product::class)->create();
+
+        $this->assertCount(1, Product::all());
+
+        $this->patch('/api/product/' . $product->id, ['price' => '22'] );
+
+        $product = Product::first();
+
+        $this->assertEquals('22', $product->price);
+    }
+
     private function productTestData()
     {
         return [

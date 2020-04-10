@@ -78,8 +78,12 @@ class ProductController extends Controller
      */
     public function update(Request $request, Product $product)
     {
-        //dd($product);
-        $product->update(['quantity' => $request->quantity]);
+        // can't get the $product->fill() function to work properly
+        // https://ryanchenkie.com/laravel-put-requests
+        $product->update([
+                            'quantity' => $request->quantity ? $request->quantity : $product->quantity ,
+                            'price' => $request->price ? $request->price : $product->price ,
+                        ]);
         return response([''], 200 );
     }
 
