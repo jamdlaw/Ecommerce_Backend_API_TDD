@@ -28,7 +28,9 @@ class OrderTest extends TestCase
     /** @test */
     public function products_can_be_added_to_order()
     {
-        $order = factory(Customer::class)->create();
+        
+        $order = factory(Order::class)->create();
+        
         $orderProduct = OrderProducts::create([
                                                 'order_id' => $order->id,
                                                 'product_id' => 2, 
@@ -38,6 +40,8 @@ class OrderTest extends TestCase
         
         $this->assertCount(1, OrderProducts::all()); 
 
+        $order = Order::all();
+        //dd($order->products());
     }
 
     private function data()
