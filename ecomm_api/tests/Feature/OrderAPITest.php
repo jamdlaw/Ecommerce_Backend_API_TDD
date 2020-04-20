@@ -40,8 +40,11 @@ class OrderTest extends TestCase
         
         $this->assertCount(1, OrderProducts::all()); 
 
-        $order = Order::all();
-        //dd($order->products());
+        $order = Order::find($order->id);
+        
+        $this->assertEquals($order->products()->first()->id, $order->id);
+        $this->assertEquals($order->products()->first()->product_id, 2);
+        $this->assertEquals($order->products()->first()->quantity, 3);
     }
 
     private function data()
