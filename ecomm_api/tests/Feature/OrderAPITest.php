@@ -47,8 +47,8 @@ class OrderTest extends TestCase
     private function data()
     {
         return [
-            'product_id' => 1, 
-            'quantity' => 3,          
+            'customer_id' => factory(Customer::class),  
+            
         ];
     }
 }
