@@ -7,6 +7,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use App\Order;
 use App\Customer;
+use App\OrderProducts;
 
 class OrderTest extends TestCase
 {
@@ -22,6 +23,21 @@ class OrderTest extends TestCase
         $order = Order::create(array_merge($this->data(), ['customer_id'=> $customer->id]));
         $this->assertCount(1, Order::all());
     
+    }
+
+    /** @test */
+    public function products_can_be_added_to_order()
+    {
+        $order = factory(Customer::class)->create();
+        $orderProduct = OrderProducts::create([
+                                                'order_id' => $order->id,
+                                                'product_id' => 2, 
+                                                'quantity' => 3, 
+                                                'price' => 10.00
+                                            ]);
+        
+        $this->assertCount(1, OrderProducts::all()); 
+
     }
 
     private function data()
