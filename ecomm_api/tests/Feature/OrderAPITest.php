@@ -40,13 +40,24 @@ class OrderTest extends TestCase
         
         $this->assertCount(1, OrderProducts::all()); 
 
-        $order = Order::find($order->id);
+        $order = Order::where($order->id);
         
         $this->assertEquals($order->products()->first()->id, $order->id);
         $this->assertEquals($order->products()->first()->product_id, 2);
         $this->assertEquals($order->products()->first()->quantity, 3);
     }
 
+    /** @test */
+    public function orders_can_be_pulled_be_pending_status_code()
+    {
+        $order = factory(Order::class)->create(['status' => 'pending']);
+        $orderWeDoNotWant = factory(Order::class)->create(['status' => 'processing']);
+        $anotherOrderWeDoNotWant = factory(Order::class)->create(['status' => 'processing']);
+
+        $ordersToSend = Order::where('status', '=', 'pending' )->get();
+
+        $this->assertCount(1, $ordersToSend);
+    }
     private function data()
     {
         return [
