@@ -76,6 +76,19 @@ class OrderTest extends TestCase
                                 ['id'=> $order->id ]
         ]);
     }
+
+    /** @test */
+    public function a_order_status_can_be_updated_to_processing()
+    {
+        $order = factory(Order::class)->create(['status' => 'pending']);
+
+        $reponse = $this->patch('/api/order/' . $order->id , ['status' => 'processing']);
+
+        $order = Order::find($order->id);
+
+        $this->assertEquals('processing', $order->status );
+    }
+
     private function data()
     {
         return [

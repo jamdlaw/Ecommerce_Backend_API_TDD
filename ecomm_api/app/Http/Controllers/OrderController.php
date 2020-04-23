@@ -22,6 +22,12 @@ class OrderController extends Controller
         return response($ordersToSend, 200);
     }
 
+    public function updateOrderStatus(Order $order)
+    {
+        
+        return $order->update(['status' => request('status') ]);
+    }
+
     /**
      * Show the form for creating a new resource.
      *
@@ -62,7 +68,7 @@ class OrderController extends Controller
      */
     public function edit(Order $order)
     {
-        //
+      
     }
 
     /**
