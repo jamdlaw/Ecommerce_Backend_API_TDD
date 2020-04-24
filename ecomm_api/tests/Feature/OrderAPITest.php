@@ -86,16 +86,23 @@ class OrderTest extends TestCase
     }
 
     /** @test */
+    public function bad_shipment_records_will_not_be_saved()
+    {
+        
+        collect(['order_id', 'tracking_code'])
+        ->each(function ($field){
+            $response = $this->post('/api/order/shipments/' . $this->order->id, array_merge($this->shipmentData(), [$field=>'']));
+            $response->assertSessionHasErrors($field);
+        });
+    }
+
+
+    /** @test */
     public function a_order_can_have_shipment_records_saved()
     {
         $this->withoutExceptionHandling();
-        $this->post('/api/orders/' . $this->order->id, [
-                                                        'order_id' => $this->order->id,
-                                                        'carrier' => 'fedex',
-                                                        'shipping_level' => 'ground',
-                                                        'tracking_code' => '12lk4kaDkfo45',
-                                                        ]);
-
+        $this->post('/api/order/shipments/' . $this->order->id,  $this->shipmentData());
+        
         $order = Order::find($this->order->id);
         $this->assertEquals($order->shipments()->first()->tracking_code, '12lk4kaDkfo45');
     }
@@ -105,6 +112,16 @@ class OrderTest extends TestCase
         return [
             'customer_id' => factory(Customer::class),  
             'status' => "pending",
+        ];
+    }
+
+    private function shipmentData()
+    {
+        return [
+            'order_id' => $this->order->id,
+            'carrier' => 'fedex',
+            'shipping_level' => 'ground',
+            'tracking_code' => '12lk4kaDkfo45',
         ];
     }
 }

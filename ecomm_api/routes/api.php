@@ -18,4 +18,4 @@ Route::get('customer/{customer_id}', 'CustomerController@show' );
 /* order routes */
 Route::get('orders/', 'OrderController@pendingOrders' );
 Route::patch('order/{order}', 'OrderController@updateOrderStatus');
-Route::post('orders/{order}', 'ShipmentController@store');
+Route::post('order/shipments/{order}', 'ShipmentController@store');

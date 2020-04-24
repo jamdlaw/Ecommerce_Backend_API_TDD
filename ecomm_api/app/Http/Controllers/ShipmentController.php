@@ -36,14 +36,11 @@ class ShipmentController extends Controller
      */
     public function store(Request $request, Order $order)
     {
-        $orderShipment = new OrderShipments([
-                                                'order_id' => request('order_id'),
-                                                'carrier' => request('carrier'), 
-                                                'shipping_level' => request('shipping_level'), 
-                                                'tracking_code' => request('tracking_code'), 
-                                            ]);
-        $orderShipment->save();     
-        //dd(request()->order()->orderShipments()->create($request));
+        
+        $orderShipment = new OrderShipments;
+        
+        $orderShipment->fill($this->validateData());
+        $orderShipment->save();
     }
 
     /**
@@ -89,5 +86,16 @@ class ShipmentController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function validateData()
+    {
+        return request()->validate([
+                 'order_id' => 'required',
+                 'tracking_code' => 'required' ,
+                 'shipping_level' => '',
+                 'carrier' => '', 
+            ]);
+        
     }
 }
