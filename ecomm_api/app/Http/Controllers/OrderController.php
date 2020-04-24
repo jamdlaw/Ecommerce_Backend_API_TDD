@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Order;
 use App\OrderProducts;
 use Illuminate\Http\Request;
+use App\Http\Resources\Orders as OrderResource;
 use Symfony\Component\HttpFoundation\Response;
 
 class OrderController extends Controller
@@ -19,7 +20,7 @@ class OrderController extends Controller
     {
         $ordersToSend = Order::where('status', '=', 'pending' )->get();
 
-        return response($ordersToSend, 200);
+        return OrderResource::collection($ordersToSend);
     }
 
     public function updateOrderStatus(Order $order)

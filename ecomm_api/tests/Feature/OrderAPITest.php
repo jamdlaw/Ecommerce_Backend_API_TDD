@@ -14,14 +14,20 @@ class OrderTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected $order; 
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->order = factory(Order::class)->create();
+    }
+
     /** @test */
     public function a_order_can_be_created()
     {
         
         $this->withoutExceptionHandling();
-        
-        $customer = factory(Customer::class)->create();
-        $order = Order::create(array_merge($this->data(), ['customer_id'=> $customer->id]));
+        //order creation was handeled in setup function
         $this->assertCount(1, Order::all());
     
     }
@@ -29,7 +35,7 @@ class OrderTest extends TestCase
     /** @test */
     public function products_can_be_added_to_order()
     {
-        
+        $this->withoutExceptionHandling();
         $order = factory(Order::class)->create();
         
         $orderProduct = OrderProducts::create([
@@ -39,26 +45,13 @@ class OrderTest extends TestCase
                                                 'price' => 10.00,
                                             ]);
         
-        $this->assertCount(1, OrderProducts::all()); 
+        
 
         $order = Order::where('id', $order->id)->first();
         
-        $this->assertEquals($order->products()->first()->id, $order->id);
+        $this->assertEquals($order->products()->first()->order_id, $order->id);
         $this->assertEquals($order->products()->first()->product_id, 2);
         $this->assertEquals($order->products()->first()->quantity, 3);
-    }
-
-    /** @test */
-    public function orders_can_be_pulled_be_pending_status_code()
-    {
-    
-        $order = factory(Order::class)->create(['status' => 'pending']);
-        $orderWeDoNotWant = factory(Order::class)->create(['status' => 'processing']);
-        $anotherOrderWeDoNotWant = factory(Order::class)->create(['status' => 'processing']);
-
-        $ordersToSend = Order::where('status', '=', 'pending' )->get();
-
-        $this->assertCount(1, $ordersToSend);
     }
 
     /** @test */
@@ -66,15 +59,18 @@ class OrderTest extends TestCase
     {
         $this->withoutExceptionHandling();
         $orderWeDoNotWant = factory(Order::class)->create(['status' => 'processing']);
-        $order = factory(Order::class)->create(['status' => 'pending']);
         $anotherOrderWeDoNotWant = factory(Order::class)->create(['status' => 'processing']);
 
         $response = $this->get('/api/orders');
 
         $response->assertStatus(Response::HTTP_OK);
-        $response->assertJson([
-                                ['id'=> $order->id ]
-        ]);
+        $response->assertJson([ //+response
+                               'data' => [ // +collection
+                                   [ // +obejct in collection
+                                       'data' => ['order_id'=> $this->order->id ] // data in the object
+                                       ] // - object in collection
+                               ] // - collection
+        ]); // - response
     }
 
     /** @test */
@@ -87,6 +83,21 @@ class OrderTest extends TestCase
         $order = Order::find($order->id);
 
         $this->assertEquals('processing', $order->status );
+    }
+
+    /** @test */
+    public function a_order_can_have_shipment_records_saved()
+    {
+        $this->withoutExceptionHandling();
+        $this->post('/api/orders/' . $this->order->id, [
+                                                        'order_id' => $this->order->id,
+                                                        'carrier' => 'fedex',
+                                                        'shipping_level' => 'ground',
+                                                        'tracking_code' => '12lk4kaDkfo45',
+                                                        ]);
+
+        $order = Order::find($this->order->id);
+        $this->assertEquals($order->shipments()->first()->tracking_code, '12lk4kaDkfo45');
     }
 
     private function data()
