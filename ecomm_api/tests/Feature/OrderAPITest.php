@@ -96,7 +96,20 @@ class OrderTest extends TestCase
         });
     }
 
-
+    /** @test */
+    /* this test needs some work it is throwing a model not found exception and
+    // I don't know how to handel it gracefully 
+    public function shipment_record_must_be_attached_to_an_order()
+    {
+        $bad_order_id = 100000;
+        $response =  $this->post('/api/order/shipments/' . $bad_order_id,  
+                                            array_merge($this->shipmentData(), 
+                                                        ['order_id' => $bad_order_id]
+                                                    ));
+        
+        $response->assertSessionHasErrors();
+    }
+    */
     /** @test */
     public function a_order_can_have_shipment_records_saved()
     {
