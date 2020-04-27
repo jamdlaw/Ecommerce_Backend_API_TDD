@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
+use App\User;
 use App\Order;
 use App\Customer;
 use App\OrderProducts;
@@ -14,19 +15,23 @@ class OrderTest extends TestCase
 {
     use RefreshDatabase;
 
-    protected $order; 
+    protected $order, $user; 
 
     protected function setUp(): void
     {
         parent::setUp();
+
+        $this->user = factory(User::class)->create();
+
         $this->order = factory(Order::class)->create();
+
     }
 
     /** @test */
     public function a_order_can_be_created()
     {
         
-        $this->withoutExceptionHandling();
+       // $this->withoutExceptionHandling();
         //order creation was handeled in setup function
         $this->assertCount(1, Order::all());
     
@@ -35,7 +40,7 @@ class OrderTest extends TestCase
     /** @test */
     public function products_can_be_added_to_order()
     {
-        $this->withoutExceptionHandling();
+        //$this->withoutExceptionHandling();
         $order = factory(Order::class)->create();
         
         $orderProduct = OrderProducts::create([
@@ -55,30 +60,32 @@ class OrderTest extends TestCase
     }
 
     /** @test */
-    public function pending_orders_can_be_pulled_from_api()
+    public function only_auth_api_user_can_pull_pending_orders()
     {
-        $this->withoutExceptionHandling();
+      //  $this->withoutExceptionHandling();
         $orderWeDoNotWant = factory(Order::class)->create(['status' => 'processing']);
         $anotherOrderWeDoNotWant = factory(Order::class)->create(['status' => 'processing']);
 
-        $response = $this->get('/api/orders');
+        $response = $this->get('/api/orders/?api_token=' . $this->user->api_token);
 
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJson([ //+response
-                               'data' => [ // +collection
-                                   [ // +obejct in collection
+                               'data' => [ // + collection
+                                   [ // + object in collection
                                        'data' => ['order_id'=> $this->order->id ] // data in the object
                                        ] // - object in collection
                                ] // - collection
         ]); // - response
     }
 
+
     /** @test */
     public function a_order_status_can_be_updated_to_processing()
     {
+        //  $this->withoutExceptionHandling();
         $order = factory(Order::class)->create(['status' => 'pending']);
 
-        $reponse = $this->patch('/api/order/' . $order->id , ['status' => 'processing']);
+        $reponse = $this->patch('/api/order/' . $order->id .'?api_token=' . $this->user->api_token  , ['status' => 'processing']);
 
         $order = Order::find($order->id);
 
@@ -110,10 +117,11 @@ class OrderTest extends TestCase
         $response->assertSessionHasErrors();
     }
     */
+
     /** @test */
     public function a_order_can_have_shipment_records_saved()
     {
-        $this->withoutExceptionHandling();
+      //  $this->withoutExceptionHandling();
         $this->post('/api/order/shipments/' . $this->order->id,  $this->shipmentData());
         
         $order = Order::find($this->order->id);
@@ -135,6 +143,7 @@ class OrderTest extends TestCase
             'carrier' => 'fedex',
             'shipping_level' => 'ground',
             'tracking_code' => '12lk4kaDkfo45',
+            'api_token' => $this->user->api_token,
         ];
     }
 }

@@ -5,21 +5,31 @@ namespace Tests\Feature;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
+use App\User;
 use App\Customer;
 
 class CustomerAPITest extends TestCase
 {
     use RefreshDatabase;
 
+    protected $user; 
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->user = factory(User::class)->create();
+    }
+
     /** @test */
     public function get_customer_data()
     {
-        $this->withoutExceptionHandling();
-        
+        //$this->withoutExceptionHandling();
         $customer = factory(Customer::class)->create();
+        
         $this->assertCount(1, Customer::all());
         
-        $response = $this->get('api/customer/' . $customer->id );
+        $response = $this->get('api/customer/' . $customer->id . '?api_token=' . $this->user->api_token );
 
         $response->assertJson(['firstName'=> $customer->firstName]);
     }

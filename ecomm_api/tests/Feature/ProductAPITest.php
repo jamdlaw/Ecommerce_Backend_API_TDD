@@ -5,11 +5,21 @@ namespace Tests\Feature;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
+use App\User;
 use App\Product;
 
 class ProductAPITest extends TestCase
 {
     use RefreshDatabase;
+
+    protected $user; 
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->user = factory(User::class)->create();
+    }
 
     /** @test */
     public function a_product_can_be_created()
@@ -40,7 +50,7 @@ class ProductAPITest extends TestCase
 
         $this->assertCount(1, Product::all());
 
-        $this->patch('/api/product/' . $product->id, ['quantity' => '333'] );
+        $this->patch('/api/product/' . $product->id  . '?api_token=' . $this->user->api_token, ['quantity' => '333'] );
 
         $product = Product::first();
 
@@ -55,7 +65,7 @@ class ProductAPITest extends TestCase
 
         $this->assertCount(1, Product::all());
 
-        $this->patch('/api/product/' . $product->id, ['price' => '22'] );
+        $this->patch('/api/product/' . $product->id . '?api_token=' . $this->user->api_token , ['price' => '22'] );
 
         $product = Product::first();
 
@@ -70,7 +80,7 @@ class ProductAPITest extends TestCase
 
         $this->assertCount(1, Product::all());
 
-        $this->patch('/api/product/' . $product->id, ['active' => false]);
+        $this->patch('/api/product/' . $product->id . '?api_token=' . $this->user->api_token, ['active' => false]);
 
         $product = Product::first();
 
@@ -86,7 +96,7 @@ class ProductAPITest extends TestCase
 
         $this->assertCount(1, Product::all());
 
-        $this->patch('/api/product/' . $product->id, ['active' => true]);
+        $this->patch('/api/product/' . $product->id . '?api_token=' . $this->user->api_token, ['active' => true]);
 
         $product = Product::first();
 
@@ -104,6 +114,7 @@ class ProductAPITest extends TestCase
             'image' => 'http://image_site.looking',
             'active'   => 'true',
             'quantity' => '100',
+            'api_token' => $this->user->api_token,
         ];
     }
 }
